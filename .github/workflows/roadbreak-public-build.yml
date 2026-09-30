@@ -98,13 +98,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ci/logs
-          /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 --headless --path . --editor --quit \
+          /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 --headless --path . --import \
             2>&1 | tee ci/logs/terrain-v019-import.log
           ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" ci/logs/terrain-v019-import.log
           timeout 360s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 --headless --path . \
             -s godot/tools/generate_terrain3d_data.gd 2>&1 | tee ci/logs/terrain-v019-generate.log
           grep -q "TERRAIN_V019_RESULT=PASS" ci/logs/terrain-v019-generate.log
-          /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 --headless --path . --editor --quit \
+          /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 --headless --path . --import \
             2>&1 | tee ci/logs/terrain-v019-reimport.log
           ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" ci/logs/terrain-v019-reimport.log
           timeout 150s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 --headless --path . \
@@ -366,12 +366,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          godot --headless --path . --editor --quit 2>&1 | tee /tmp/terrain-v019-import.log
+          godot --headless --path . --import 2>&1 | tee /tmp/terrain-v019-import.log
           ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" /tmp/terrain-v019-import.log
           timeout 360s godot --headless --path . -s godot/tools/generate_terrain3d_data.gd \
             2>&1 | tee /tmp/terrain-v019-generate.log
           grep -q "TERRAIN_V019_RESULT=PASS" /tmp/terrain-v019-generate.log
-          godot --headless --path . --editor --quit 2>&1 | tee /tmp/terrain-v019-reimport.log
+          godot --headless --path . --import 2>&1 | tee /tmp/terrain-v019-reimport.log
           ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" /tmp/terrain-v019-reimport.log
           timeout 150s godot --headless --path . -s godot/tests/terrain_v019_smoke.gd \
             2>&1 | tee /tmp/terrain-v019-smoke.log
