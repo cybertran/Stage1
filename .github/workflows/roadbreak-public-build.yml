@@ -128,8 +128,18 @@ jobs:
             2>&1 | tee ci/logs/stage1-import.log
           ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" ci/logs/stage1-import.log
 
+      - name: Run v0.18 compile/load gate
+        run: |
+          set -euo pipefail
+          timeout 90s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 \
+            --verbose --headless --path . -s godot/tests/compile_v018_smoke.gd \
+            2>&1 | tee ci/logs/stage1-compile-v018.log
+          grep -q "COMPILE_V018_RESULT=PASS" ci/logs/stage1-compile-v018.log
+          ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" ci/logs/stage1-compile-v018.log
+
       - name: Run v0.13 content gate
         run: |
+          set -euo pipefail
           timeout 75s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 \
             --verbose --headless --path . -s godot/tests/content_v013_smoke.gd \
             2>&1 | tee ci/logs/stage1-content-v013.log
@@ -141,6 +151,7 @@ jobs:
 
       - name: Run v0.17 production gate
         run: |
+          set -euo pipefail
           timeout 180s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 \
             --verbose --headless --path . -s godot/tests/production_v017_smoke.gd \
             2>&1 | tee ci/logs/stage1-production-v017.log
@@ -151,6 +162,7 @@ jobs:
 
       - name: Run v0.18 audit behavioral gate
         run: |
+          set -euo pipefail
           timeout 180s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 \
             --verbose --headless --path . -s godot/tests/audit_v018_smoke.gd \
             2>&1 | tee ci/logs/stage1-audit-v018.log
@@ -162,6 +174,7 @@ jobs:
 
       - name: Run touch and garage regression
         run: |
+          set -euo pipefail
           timeout 120s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 \
             --verbose --headless --path . -s godot/tests/touch_regression.gd \
             2>&1 | tee ci/logs/stage1-touch.log
@@ -171,6 +184,7 @@ jobs:
 
       - name: Render dedicated garage QA
         run: |
+          set -euo pipefail
           rm -f ci/previews/00_garage_*.png
           timeout 70s xvfb-run -a -s "-screen 0 1280x720x24" \
             env ROADBREAK_GARAGE_CAPTURE=1 LIBGL_ALWAYS_SOFTWARE=1 \
@@ -191,6 +205,7 @@ jobs:
 
       - name: Render gameplay QA
         run: |
+          set -euo pipefail
           timeout 115s xvfb-run -a -s "-screen 0 1280x720x24" \
             env ROADBREAK_CI_CAPTURE=1 LIBGL_ALWAYS_SOFTWARE=1 \
             /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 \
@@ -343,7 +358,12 @@ jobs:
 
       - name: Parse and regression gate
         run: |
+          set -euo pipefail
           godot --headless --path . --editor --quit
+          timeout 90s godot --headless --path . -s godot/tests/compile_v018_smoke.gd \
+            2>&1 | tee /tmp/compile-v018.log
+          grep -q "COMPILE_V018_RESULT=PASS" /tmp/compile-v018.log
+          ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" /tmp/compile-v018.log
           timeout 75s godot --headless --path . -s godot/tests/content_v013_smoke.gd \
             2>&1 | tee /tmp/content-v013.log
           grep -q "CONTENT_V013_RESULT=PASS" /tmp/content-v013.log
