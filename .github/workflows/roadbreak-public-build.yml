@@ -357,6 +357,7 @@ jobs:
           fi
 
       - name: Parse and regression gate
+        shell: bash
         run: |
           set -euo pipefail
           godot --headless --path . --editor --quit
