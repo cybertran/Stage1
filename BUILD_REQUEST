@@ -1,4 +1,4 @@
 source_ref=feat/content-handling-v013
-source_sha=f77ffe344fed61a58b4c30263c7642a3df880b70
+source_sha=8ad45e6e025eb2ed82b5367137f4c8564af1e885
 requested_for=v0.13.0-rc1
-reason=release-publish-fix-and-qa-preview
+reason=authored-minigun-and-release-retry
