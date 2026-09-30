@@ -126,6 +126,7 @@ jobs:
           grep -q "CI_GARAGE_CAPTURE=PASS" ci/logs/stage1-garage.log
           test -s ci/previews/00_garage_main.png
           test -s ci/previews/00_garage_workshop.png
+          test -s ci/previews/00_garage_driver.png
 
       - name: Render gameplay QA
         run: |
@@ -152,6 +153,7 @@ jobs:
           for file in \
             ci/previews/00_garage_main.png \
             ci/previews/00_garage_workshop.png \
+            ci/previews/00_garage_driver.png \
             ci/previews/01_chase.png \
             ci/previews/02_vehicle.png \
             ci/previews/04_rival_bus.png \
@@ -196,7 +198,7 @@ jobs:
           NEW_ID="$(printf '%s' "$RELEASE" | jq -r '.id')"
           test "$NEW_ID" != "null"
 
-          for file in             ci/previews/00_garage_main.png             ci/previews/00_garage_workshop.png             ci/previews/01_chase.png             ci/previews/02_vehicle.png             ci/previews/04_rival_bus.png             ci/previews/06_mobile_controls.png; do
+          for file in             ci/previews/00_garage_main.png             ci/previews/00_garage_workshop.png             ci/previews/00_garage_driver.png             ci/previews/01_chase.png             ci/previews/02_vehicle.png             ci/previews/04_rival_bus.png             ci/previews/06_mobile_controls.png; do
             test -s "$file"
             name="$(basename "$file")"
             curl -fsS -X POST               -H "Authorization: Bearer $GH_TOKEN"               -H "Accept: application/vnd.github+json"               -H "Content-Type: image/png"               --data-binary "@$file"               "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$NEW_ID/assets?name=$name"
