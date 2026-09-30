@@ -58,7 +58,19 @@ jobs:
           unzip -q /tmp/godot.zip -d /tmp/godot
           chmod +x /tmp/godot/Godot_v4.6.3-stable_linux.x86_64
 
-      - name: Validate vendored v0.13 production assets
+      - name: Hydrate large pinned CC0 assets
+        run: |
+          mkdir -p godot/assets/vehicles/cc0 godot/assets/drivers/cc0
+          curl -fL --retry 4 --retry-delay 2 \
+            "https://raw.githubusercontent.com/KhronosGroupArchives/glTF-Sample-Models/d7a3cc8e51d7c573771ae77a57f16b0662a905c6/2.0/ToyCar/glTF-Binary/ToyCar.glb" \
+            -o godot/assets/vehicles/cc0/rattler_toycar.glb
+          curl -fL --retry 4 --retry-delay 2 \
+            "https://raw.githubusercontent.com/ingel81/3dtd/c169ba7c39112244174c04b292cefd82417c36ed/public/assets/models/hero/mercenary.glb" \
+            -o godot/assets/drivers/cc0/driver_swat.glb
+          test "$(stat -c%s godot/assets/vehicles/cc0/rattler_toycar.glb)" -gt 5000000
+          test "$(stat -c%s godot/assets/drivers/cc0/driver_swat.glb)" -gt 1000000
+
+      - name: Validate v0.13 production assets
         run: |
           test -s godot/assets/vehicles/cc0/rattler_toycar.glb
           test -s godot/assets/vehicles/cc0/iron_bus_ajanhallinta.fbx
@@ -184,7 +196,22 @@ jobs:
       - name: Record source commit
         run: echo "SOURCE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
-      - name: Validate vendored v0.13 production assets
+      - name: Hydrate large pinned CC0 assets
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl ca-certificates
+          mkdir -p godot/assets/vehicles/cc0 godot/assets/drivers/cc0
+          curl -fL --retry 4 --retry-delay 2 \
+            "https://raw.githubusercontent.com/KhronosGroupArchives/glTF-Sample-Models/d7a3cc8e51d7c573771ae77a57f16b0662a905c6/2.0/ToyCar/glTF-Binary/ToyCar.glb" \
+            -o godot/assets/vehicles/cc0/rattler_toycar.glb
+          curl -fL --retry 4 --retry-delay 2 \
+            "https://raw.githubusercontent.com/ingel81/3dtd/c169ba7c39112244174c04b292cefd82417c36ed/public/assets/models/hero/mercenary.glb" \
+            -o godot/assets/drivers/cc0/driver_swat.glb
+          test "$(stat -c%s godot/assets/vehicles/cc0/rattler_toycar.glb)" -gt 5000000
+          test "$(stat -c%s godot/assets/drivers/cc0/driver_swat.glb)" -gt 1000000
+          rm -rf /var/lib/apt/lists/*
+
+      - name: Validate v0.13 production assets
         run: |
           test -s godot/assets/vehicles/cc0/rattler_toycar.glb
           test -s godot/assets/vehicles/cc0/iron_bus_ajanhallinta.fbx
