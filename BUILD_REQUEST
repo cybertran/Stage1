@@ -1,3 +1,3 @@
-Roadbreak audit remediation v0.18 checkpoint 11
+Roadbreak audit remediation v0.18 checkpoint 12
 source_ref=feat/audit-remediation-v018
-purpose=validate_shoulder_hysteresis_smoke_fix_at_6dd35528_and_publish_android_if_green
+purpose=validate_isolated_shoulder_hysteresis_at_458c2625_and_publish_android_if_green
