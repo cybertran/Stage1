@@ -1,3 +1,3 @@
-v0.13 content handling build retry 3
+v0.13 validation request
 source_ref=feat/content-handling-v013
-reason=preserve profile grip and deterministic heavy launch
+requested_at=ai-travel-fix
