@@ -1,4 +1,4 @@
 v0.17 validation request
 source_ref=feat/production-polish-v017
-source_sha=3556c22d140e1c777ce5611dae5e9ef315ae6ff7
-requested_at=retry-after-parser-type-fix
+source_sha=175169732080265df648f18e2b9c0ff963f1acd4
+requested_at=retry-after-cole-content-gate-sync
