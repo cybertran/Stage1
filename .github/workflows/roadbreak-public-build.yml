@@ -6,7 +6,7 @@ on:
       source_ref:
         description: "Private Roadbreak branch/tag/commit to build"
         required: true
-        default: "feat/garage-audio-stage1-v012"
+        default: "refine/hardsurface-quality-pass"
         type: string
 
 concurrency:
