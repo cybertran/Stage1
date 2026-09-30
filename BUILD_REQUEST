@@ -1,4 +1,2 @@
+v0.13 2026-09-30T10:04:22.901Z
 source_ref=feat/content-handling-v013
-source_sha=82a1cc6413bda71958d2eb7b050a746cb3e54d50
-requested_for=v0.13.0-rc1
-reason=deterministic-rival-routing
