@@ -6,7 +6,7 @@ on:
       source_ref:
         description: "Private Roadbreak branch/tag/commit to build"
         required: true
-        default: "feat/audit-remediation-v018"
+        default: "feat/terrain3d-overhaul-v019"
         type: string
   push:
     branches:
@@ -15,7 +15,7 @@ on:
       - BUILD_REQUEST
 
 concurrency:
-  group: roadbreak-public-builder-v018
+  group: roadbreak-public-builder-v019
   cancel-in-progress: true
 
 permissions:
@@ -25,7 +25,7 @@ env:
   SOURCE_REPOSITORY: cybertran/Roadbreak-75
   GODOT_VERSION: "4.6.3"
   APK_NAME: "Roadbreak-75-debug.apk"
-  SOURCE_REF: ${{ inputs.source_ref || 'feat/audit-remediation-v018' }}
+  SOURCE_REF: ${{ inputs.source_ref || 'feat/terrain3d-overhaul-v019' }}
 
 jobs:
   resolve-source:
@@ -57,7 +57,7 @@ jobs:
     needs: resolve-source
     name: Private source QA on public runner
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 35
 
     steps:
       - name: Checkout private Roadbreak source
@@ -75,7 +75,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            xvfb libgl1-mesa-dri libglx-mesa0 mesa-utils wget unzip curl ca-certificates
+            xvfb libgl1-mesa-dri libglx-mesa0 mesa-utils wget unzip curl ca-certificates python3 python3-pil
 
       - name: Download Godot 4.6.3
         run: |
@@ -84,6 +84,32 @@ jobs:
             -O /tmp/godot.zip
           unzip -q /tmp/godot.zip -d /tmp/godot
           chmod +x /tmp/godot/Godot_v4.6.3-stable_linux.x86_64
+
+      - name: Hydrate Terrain3D and CC0 PBR terrain
+        env:
+          ROADBREAK_TERRAIN_RES: "4k"
+        run: |
+          set -euo pipefail
+          python3 tools/bootstrap_terrain3d.py
+          test -s addons/terrain_3d/plugin.cfg
+          test -s godot/assets/terrain/pbr/manifest.generated.json
+
+      - name: Generate and validate Terrain3D world
+        run: |
+          set -euo pipefail
+          mkdir -p ci/logs
+          /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 --headless --path . --editor --quit \
+            2>&1 | tee ci/logs/terrain-v019-import.log
+          ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" ci/logs/terrain-v019-import.log
+          timeout 360s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 --headless --path . \
+            -s godot/tools/generate_terrain3d_data.gd 2>&1 | tee ci/logs/terrain-v019-generate.log
+          grep -q "TERRAIN_V019_RESULT=PASS" ci/logs/terrain-v019-generate.log
+          /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 --headless --path . --editor --quit \
+            2>&1 | tee ci/logs/terrain-v019-reimport.log
+          ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" ci/logs/terrain-v019-reimport.log
+          timeout 150s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 --headless --path . \
+            -s godot/tests/terrain_v019_smoke.gd 2>&1 | tee ci/logs/terrain-v019-smoke.log
+          grep -q "TERRAIN_V019_RESULT=PASS" ci/logs/terrain-v019-smoke.log
 
       - name: Hydrate large pinned CC0 assets
         run: |
@@ -265,7 +291,7 @@ jobs:
           set -euo pipefail
           API="https://api.github.com/repos/$GITHUB_REPOSITORY"
           AUTH=(-H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
-          TAG="roadbreak-qa-latest"
+          TAG="roadbreak-terrain-v019-qa-latest"
 
           EXISTING="$(curl -sS "${AUTH[@]}" "$API/releases/tags/$TAG")"
           RELEASE_ID="$(printf '%s' "$EXISTING" | jq -r '.id // empty' 2>/dev/null || true)"
@@ -274,7 +300,7 @@ jobs:
           fi
           curl -sS -o /dev/null -X DELETE "${AUTH[@]}" "$API/git/refs/tags/$TAG" || true
 
-          PAYLOAD="$(jq -n             --arg tag "$TAG"             --arg target "$GITHUB_SHA"             --arg name "Roadbreak 75 — v0.18 QA previews"             --arg body "Ephemeral-style QA previews persisted as GitHub Release assets, not Actions artifacts. Source ref: $SOURCE_REF. Pinned source SHA: $SOURCE_SHA."             '{tag_name:$tag,target_commitish:$target,name:$name,body:$body,draft:false,prerelease:true}')"
+          PAYLOAD="$(jq -n             --arg tag "$TAG"             --arg target "$GITHUB_SHA"             --arg name "Roadbreak 75 — v0.19 Terrain3D QA previews"             --arg body "Ephemeral-style QA previews persisted as GitHub Release assets, not Actions artifacts. Source ref: $SOURCE_REF. Pinned source SHA: $SOURCE_SHA."             '{tag_name:$tag,target_commitish:$target,name:$name,body:$body,draft:false,prerelease:true}')"
 
           RELEASE="$(curl -fsS -X POST "${AUTH[@]}" -H "Content-Type: application/json" -d "$PAYLOAD" "$API/releases")"
           NEW_ID="$(printf '%s' "$RELEASE" | jq -r '.id')"
@@ -296,7 +322,7 @@ jobs:
     name: Build and publish Android APK
     needs: [resolve-source, visual-qa]
     runs-on: ubuntu-24.04
-    timeout-minutes: 18
+    timeout-minutes: 40
     container:
       image: barichello/godot-ci:4.6.3
 
@@ -315,7 +341,7 @@ jobs:
       - name: Hydrate large pinned CC0 assets
         run: |
           apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl ca-certificates python3
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl ca-certificates python3 python3-pil unzip
           mkdir -p godot/assets/vehicles/cc0 godot/assets/drivers/cc0
           curl -fL --retry 4 --retry-delay 2 \
             "https://raw.githubusercontent.com/KhronosGroupArchives/glTF-Sample-Models/d7a3cc8e51d7c573771ae77a57f16b0662a905c6/2.0/ToyCar/glTF-Binary/ToyCar.glb" \
@@ -326,6 +352,30 @@ jobs:
           test "$(stat -c%s godot/assets/vehicles/cc0/rattler_toycar.glb)" -gt 5000000
           test "$(stat -c%s godot/assets/drivers/cc0/driver_swat.glb)" -gt 1000000
           rm -rf /var/lib/apt/lists/*
+
+      - name: Hydrate Terrain3D and CC0 PBR terrain
+        env:
+          ROADBREAK_TERRAIN_RES: "4k"
+        run: |
+          set -euo pipefail
+          python3 tools/bootstrap_terrain3d.py
+          test -s addons/terrain_3d/plugin.cfg
+          test -s godot/assets/terrain/pbr/manifest.generated.json
+
+      - name: Generate and validate Terrain3D world
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --headless --path . --editor --quit 2>&1 | tee /tmp/terrain-v019-import.log
+          ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" /tmp/terrain-v019-import.log
+          timeout 360s godot --headless --path . -s godot/tools/generate_terrain3d_data.gd \
+            2>&1 | tee /tmp/terrain-v019-generate.log
+          grep -q "TERRAIN_V019_RESULT=PASS" /tmp/terrain-v019-generate.log
+          godot --headless --path . --editor --quit 2>&1 | tee /tmp/terrain-v019-reimport.log
+          ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" /tmp/terrain-v019-reimport.log
+          timeout 150s godot --headless --path . -s godot/tests/terrain_v019_smoke.gd \
+            2>&1 | tee /tmp/terrain-v019-smoke.log
+          grep -q "TERRAIN_V019_RESULT=PASS" /tmp/terrain-v019-smoke.log
 
       - name: Prepare runtime-safe music assets
         run: |
@@ -399,8 +449,8 @@ jobs:
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml | tee build/android/manifest.txt
 
           grep -q "package: name='com.cybertran.roadbreak75'" build/android/badging.txt
-          grep -q "versionCode='20'" build/android/badging.txt
-          grep -q "versionName='0.18.0-rc1'" build/android/badging.txt
+          grep -q "versionCode='21'" build/android/badging.txt
+          grep -q "versionName='0.19.0-dev1'" build/android/badging.txt
           grep -q "native-code: 'arm64-v8a'" build/android/badging.txt
           grep -Eq "screenOrientation.*(0x6|0xb)" build/android/manifest.txt
 
@@ -421,8 +471,8 @@ jobs:
           set -euo pipefail
           API="https://api.github.com/repos/$GITHUB_REPOSITORY"
           AUTH=(-H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
-          TAG="roadbreak-android-rc-latest"
-          RELEASE_NAME="Roadbreak 75 — Stage1 v0.18.0-rc1"
+          TAG="roadbreak-terrain-v019-latest"
+          RELEASE_NAME="Roadbreak 75 — Terrain3D v0.19.0-dev1"
 
           EXISTING="$(curl -sS "${AUTH[@]}" "$API/releases/tags/$TAG")"
           RELEASE_ID="$(printf '%s' "$EXISTING" | jq -r '.id // empty')"
@@ -433,7 +483,7 @@ jobs:
 
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           SOURCE_SHA="$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)"
-          BODY="Public-runner Android build from private source ref $SOURCE_REF pinned to immutable SHA $SOURCE_SHA. v0.18.0-rc1 is the audit-remediation build: primary/signature weapon contracts, Iron Bus primary fire, AI defense/repair/timing, shield and collision damage order, per-vehicle physics/camera profiles, responsive HUD/two-thumb controls/pause, persistent loading, tactical arena density, spatial explosion audio, VFX budgets, QA telemetry and behavioral regression gates. Android runtime procedural music synthesis remains disabled unless a prepared music asset is present. Existing asset provenance remains documented in the private Roadbreak repository; source code and restricted libraries are not mirrored into Stage1."
+          BODY="Public-runner Android build from private source ref $SOURCE_REF pinned to immutable SHA $SOURCE_SHA. v0.19.0-dev1 starts the Terrain3D visual overhaul: a 1.92 km authored heightfield, 1.25 m terrain sampling, Terrain3D clipmap LOD/collision, and six CC0 PBR ground sets hydrated from Poly Haven and ambientCG. Existing v0.18 gameplay/audit regression gates remain active. Source code and provider source-map duplicates are not mirrored into Stage1."
 
           PAYLOAD="$(jq -n \
             --arg tag "$TAG" \
