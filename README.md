@@ -20,7 +20,7 @@ After the secret exists, run:
 
 `Actions → Roadbreak Public Builder → Run workflow`
 
-The default source ref is now `refine/hardsurface-quality-pass`, the validated development branch.
+The default source ref is now `feat/production-polish-v017`, the cumulative v0.14–v0.17 integration branch. Stage1 runs the legacy v0.13 real-content gate, the v0.17 six-fighter production gate, touch/garage regression, garage roster captures, gameplay render QA, Android export and package verification before publishing the release.
 
 ## Security boundary
 
