@@ -1,3 +1,3 @@
-Roadbreak audit remediation v0.18 checkpoint 6
-source_ref=feat/audit-remediation-v018
-purpose=validate_after_headless_touch_safe_area_guard
+Roadbreak audit remediation v0.18.0-rc1
+source_ref=cc926a0a698c0269960eda378204928086bf98a4
+requested_retry=5
