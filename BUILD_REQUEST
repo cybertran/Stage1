@@ -1,3 +1,3 @@
-Roadbreak audit remediation v0.18 checkpoint 5
+Roadbreak audit remediation v0.18.0-rc1
 source_ref=feat/audit-remediation-v018
-purpose=validate_after_strict_typing_and_profile_wheel_rebuild
+requested_retry=4
