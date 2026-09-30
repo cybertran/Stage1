@@ -1,4 +1,4 @@
 source_ref=feat/content-handling-v013
-source_sha=acfba6df086c15a1c4d171b7392451c04527a4b8
+source_sha=82a1cc6413bda71958d2eb7b050a746cb3e54d50
 requested_for=v0.13.0-rc1
-reason=frame-rate-independent-ai
+reason=deterministic-rival-routing
