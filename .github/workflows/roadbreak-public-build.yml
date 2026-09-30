@@ -161,13 +161,15 @@ jobs:
             path="qa/latest/$name"
             existing="$(curl -sS "${AUTH[@]}" "$API/contents/$path?ref=main")"
             sha="$(printf '%s' "$existing" | jq -r '.sha // empty' 2>/dev/null || true)"
-            content="$(base64 -w 0 "$file")"
+            base64 -w 0 "$file" > /tmp/qa-content.b64
             if [ -n "$sha" ]; then
-              payload="$(jq -n --arg msg "qa: refresh $name" --arg content "$content" --arg branch "main" --arg sha "$sha" '{message:$msg,content:$content,branch:$branch,sha:$sha}')"
+              jq -n --arg msg "qa: refresh $name" --arg branch "main" --arg sha "$sha" --rawfile content /tmp/qa-content.b64 \
+                '{message:$msg,content:$content,branch:$branch,sha:$sha}' > /tmp/qa-payload.json
             else
-              payload="$(jq -n --arg msg "qa: publish $name" --arg content "$content" --arg branch "main" '{message:$msg,content:$content,branch:$branch}')"
+              jq -n --arg msg "qa: publish $name" --arg branch "main" --rawfile content /tmp/qa-content.b64 \
+                '{message:$msg,content:$content,branch:$branch}' > /tmp/qa-payload.json
             fi
-            curl -fsS -X PUT "${AUTH[@]}" -H "Content-Type: application/json" -d "$payload" "$API/contents/$path" >/dev/null
+            curl -fsS -X PUT "${AUTH[@]}" -H "Content-Type: application/json" --data-binary @/tmp/qa-payload.json "$API/contents/$path" >/dev/null
           done
 
       - name: Publish QA preview images to Release
