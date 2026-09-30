@@ -1,3 +1,3 @@
-Roadbreak Android startup hotfix v0.17.1
-source_ref=hotfix/android-startup-v0171
-requested_retry=2
+Roadbreak audit remediation v0.18 checkpoint
+source_ref=feat/audit-remediation-v018
+purpose=parser_behavioral_gate_checkpoint
