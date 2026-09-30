@@ -1,3 +1,3 @@
-Roadbreak audit remediation v0.18 checkpoint 9
+Roadbreak audit remediation v0.18 checkpoint 10
 source_ref=feat/audit-remediation-v018
-purpose=validate_game_typing_compile_gate_workflow_hardening_and_private_manual_ci
+purpose=validate_responsive_manual_touch_anchor_and_full_pipeline
