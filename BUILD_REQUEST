@@ -1,4 +1,4 @@
 v0.17 validation request
 source_ref=feat/production-polish-v017
-source_sha=cd82d59a57a2129acc816d1f6066e6b00d1c4fb4
-requested_at=retry-after-iron-bus-steering-authority-fix
+source_sha=fb0e5d72762991c68d6b6b774193461ec239c1dd
+requested_at=retry-after-launch-stuck-watch-fix
