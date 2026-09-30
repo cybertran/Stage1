@@ -1,4 +1,3 @@
-v0.17 validation request
-source_ref=feat/production-polish-v017
-source_sha=aa1cfd49ac76285ff8a120ebe5c3a9f2b704cea1
-requested_at=retry-after-speed-aware-heavy-stuck-fix
+Roadbreak Android startup hotfix v0.17.1
+source_ref=hotfix/android-startup-v0171
+requested=2026-09-30T16:55:00Z
