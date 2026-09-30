@@ -67,6 +67,7 @@ jobs:
           test -s godot/assets/drivers/external/cole_mercer.glb
           test -s godot/assets/drivers/external/mara_voss.glb
           test -s godot/assets/audio/professional/weapons/minigun_loop.mp3
+          test -s godot/assets/weapons/external/rattler_minigun.glb
 
       - name: Import and parse
         run: |
@@ -124,6 +125,7 @@ jobs:
           test -s ci/previews/06_mobile_controls.png
 
       - name: Publish QA preview images to Release
+        continue-on-error: true
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
