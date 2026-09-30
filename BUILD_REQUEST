@@ -1,3 +1,4 @@
-v0.13 validation request
-source_ref=feat/content-handling-v013
-requested_at=driver-and-bus-center-fix
+v0.17 validation request
+source_ref=feat/production-polish-v017
+source_sha=ecb24c2cbb886244cd63c184713d18f2753d8340
+requested_at=final-v014-v017-sequence
