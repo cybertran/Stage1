@@ -58,16 +58,21 @@ jobs:
           unzip -q /tmp/godot.zip -d /tmp/godot
           chmod +x /tmp/godot/Godot_v4.6.3-stable_linux.x86_64
 
-      - name: Fetch licensed v0.13 production assets
+      - name: Validate vendored v0.13 production assets
         run: |
-          chmod +x scripts/fetch_v013_assets.sh
-          scripts/fetch_v013_assets.sh .
-          test -s godot/assets/vehicles/external/rattler_retro_pbr.glb
-          test -s godot/assets/vehicles/external/iron_bus_coach.fbx
-          test -s godot/assets/drivers/external/cole_mercer.glb
-          test -s godot/assets/drivers/external/mara_voss.glb
+          test -s godot/assets/vehicles/cc0/rattler_toycar.glb
+          test -s godot/assets/vehicles/cc0/iron_bus_ajanhallinta.fbx
+          test -s godot/assets/drivers/cc0/driver_swat.glb
+          test -s godot/assets/drivers/cc0/driver_mara_street.glb
+          test -s godot/assets/weapons/cc0/rattler_gatling.glb
+          test -s godot/assets/audio/professional/rattler/engine_combustion.ogg
+          test -s godot/assets/audio/professional/iron_bus/engine_combustion.ogg
           test -s godot/assets/audio/professional/weapons/minigun_loop.mp3
-          test -s godot/assets/weapons/external/rattler_minigun.glb
+          test -s godot/assets/audio/professional/weapons/cannon_01.mp3
+          test -s godot/assets/audio/professional/weapons/missile_launch_01.mp3
+          test -s godot/assets/audio/professional/weapons/mortar_launch_01.mp3
+          test -s godot/assets/audio/professional/impacts/metal_heavy_01.ogg
+          test -s godot/assets/audio/professional/tires/asphalt_skid.ogg
 
       - name: Import and parse
         run: |
@@ -179,13 +184,16 @@ jobs:
       - name: Record source commit
         run: echo "SOURCE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
-      - name: Fetch licensed v0.13 production assets
+      - name: Validate vendored v0.13 production assets
         run: |
-          apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl ca-certificates
-          chmod +x scripts/fetch_v013_assets.sh
-          scripts/fetch_v013_assets.sh .
-          rm -rf /var/lib/apt/lists/*
+          test -s godot/assets/vehicles/cc0/rattler_toycar.glb
+          test -s godot/assets/vehicles/cc0/iron_bus_ajanhallinta.fbx
+          test -s godot/assets/drivers/cc0/driver_swat.glb
+          test -s godot/assets/drivers/cc0/driver_mara_street.glb
+          test -s godot/assets/weapons/cc0/rattler_gatling.glb
+          test -s godot/assets/audio/professional/rattler/engine_combustion.ogg
+          test -s godot/assets/audio/professional/iron_bus/engine_combustion.ogg
+          test -s godot/assets/audio/professional/weapons/minigun_loop.mp3
 
       - name: Configure Godot paths
         run: |
@@ -263,7 +271,7 @@ jobs:
 
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           SOURCE_SHA="$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)"
-          BODY="Public-runner Android build from private source ref $SOURCE_REF at $SOURCE_SHA. v0.13.0-rc1 is the Content & Handling Pass: actual production vehicle replacements, realistic garage drivers, recorded engine/minigun/cannon/missile/collision/skid audio, tighter handling and a more open chase camera. Credits: Cole base Character of business man by Aksgamer (CC BY 4.0); Mara base Realistic Female Character by Realistic 3d (CC BY 4.0); Iron Bus coach base 3D Bus by ajanhallinta (CC0); Rattler base Toy Car from Khronos glTF sample assets (CC0). Audio sources are documented in Docs/V013_ASSET_LEDGER.md. Source code remains in the private Roadbreak repository."
+          BODY="Public-runner Android build from private source ref $SOURCE_REF at $SOURCE_SHA. v0.13.0-rc1 is the Content & Handling Pass: actual hero-vehicle replacements, distinct animated garage drivers, authored Gatling, recorded engine/minigun/cannon/missile/mortar/collision/skid audio, tighter handling and a lower chase camera. Credits: Rattler Toy Car by Guido Odendahl / Eric Chadwick (CC0); Iron Bus 3D Bus by ajanhallinta (CC0); Cole SWAT and Mara Animated Women bases by Quaternius (CC0); Gatling/Mini Gun by Tech Knight (CC0). Audio provenance is documented in Docs/V013_ASSET_LEDGER.md. Source code remains in the private Roadbreak repository."
 
           PAYLOAD="$(jq -n \
             --arg tag "$TAG" \
