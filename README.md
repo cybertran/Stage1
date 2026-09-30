@@ -20,7 +20,7 @@ After the secret exists, run:
 
 `Actions → Roadbreak Public Builder → Run workflow`
 
-During v0.12 validation the default source ref is `feat/garage-audio-stage1-v012`. After the package is merged, change/use `refine/hardsurface-quality-pass`.
+The default source ref is now `refine/hardsurface-quality-pass`, the validated development branch.
 
 ## Security boundary
 
