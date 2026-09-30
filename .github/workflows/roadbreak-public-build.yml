@@ -193,6 +193,7 @@ jobs:
           fi
           curl -sS -o /dev/null -X DELETE "${AUTH[@]}" "$API/git/refs/tags/$TAG" || true
 
+          SOURCE_SHA="$(git rev-parse HEAD)"
           BODY="Public-runner Android build from private source ref $SOURCE_REF at $SOURCE_SHA. v0.12.0-rc1: dedicated interactive 3D garage, responsive safe-area UI, external hero-asset adapter hooks, professional-audio drop zone and license ledger, distinct vehicle audio profiles, bounded transient voice pools, surface-aware tire audio, and positional projectile flight audio. Source code remains in the private Roadbreak repository."
 
           PAYLOAD="$(jq -n \
