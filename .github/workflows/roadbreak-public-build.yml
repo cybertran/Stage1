@@ -6,7 +6,7 @@ on:
       source_ref:
         description: "Private Roadbreak branch/tag/commit to build"
         required: true
-        default: "feat/content-handling-v013"
+        default: "feat/production-polish-v017"
         type: string
   push:
     branches:
@@ -25,7 +25,7 @@ env:
   SOURCE_REPOSITORY: cybertran/Roadbreak-75
   GODOT_VERSION: "4.6.3"
   APK_NAME: "Roadbreak-75-debug.apk"
-  SOURCE_REF: ${{ inputs.source_ref || 'feat/content-handling-v013' }}
+  SOURCE_REF: ${{ inputs.source_ref || 'feat/production-polish-v017' }}
 
 jobs:
   visual-qa:
@@ -105,9 +105,19 @@ jobs:
           grep -q "CONTENT_V013_RATTLER_MODEL_IMPORT=PASS" ci/logs/stage1-content-v013.log
           grep -q "CONTENT_V013_IRON_BUS_MODEL_IMPORT=PASS" ci/logs/stage1-content-v013.log
 
+      - name: Run v0.17 production gate
+        run: |
+          timeout 180s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 \
+            --verbose --headless --path . -s godot/tests/production_v017_smoke.gd \
+            2>&1 | tee ci/logs/stage1-production-v017.log
+          grep -q "PRODUCTION_V017_RESULT=PASS" ci/logs/stage1-production-v017.log
+          grep -q "PRODUCTION_V017_ROSTER_SIZE_SIX=PASS" ci/logs/stage1-production-v017.log
+          grep -q "PRODUCTION_V017_UNIQUE_PRIMARY_IDENTITIES=PASS" ci/logs/stage1-production-v017.log
+          grep -q "PRODUCTION_V017_MUSIC_COMBAT_LOOP=PASS" ci/logs/stage1-production-v017.log
+
       - name: Run touch and garage regression
         run: |
-          timeout 100s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 \
+          timeout 120s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 \
             --verbose --headless --path . -s godot/tests/touch_regression.gd \
             2>&1 | tee ci/logs/stage1-touch.log
           grep -q "TOUCH_REGRESSION=PASS" ci/logs/stage1-touch.log
@@ -127,6 +137,12 @@ jobs:
           test -s ci/previews/00_garage_main.png
           test -s ci/previews/00_garage_workshop.png
           test -s ci/previews/00_garage_driver.png
+          test -s ci/previews/00_roster_rattler_73.png
+          test -s ci/previews/00_roster_iron_bus_24.png
+          test -s ci/previews/00_roster_selena_cross.png
+          test -s ci/previews/00_roster_bruno_kane.png
+          test -s ci/previews/00_roster_dorian_vale.png
+          test -s ci/previews/00_roster_nyra_holt.png
 
       - name: Render gameplay QA
         run: |
@@ -154,6 +170,12 @@ jobs:
             ci/previews/00_garage_main.png \
             ci/previews/00_garage_workshop.png \
             ci/previews/00_garage_driver.png \
+            ci/previews/00_roster_rattler_73.png \
+            ci/previews/00_roster_iron_bus_24.png \
+            ci/previews/00_roster_selena_cross.png \
+            ci/previews/00_roster_bruno_kane.png \
+            ci/previews/00_roster_dorian_vale.png \
+            ci/previews/00_roster_nyra_holt.png \
             ci/previews/01_chase.png \
             ci/previews/02_vehicle.png \
             ci/previews/04_rival_bus.png \
@@ -192,13 +214,13 @@ jobs:
           fi
           curl -sS -o /dev/null -X DELETE "${AUTH[@]}" "$API/git/refs/tags/$TAG" || true
 
-          PAYLOAD="$(jq -n             --arg tag "$TAG"             --arg target "$GITHUB_SHA"             --arg name "Roadbreak 75 — v0.13 QA previews"             --arg body "Ephemeral-style QA previews persisted as GitHub Release assets, not Actions artifacts. Source ref: $SOURCE_REF."             '{tag_name:$tag,target_commitish:$target,name:$name,body:$body,draft:false,prerelease:true}')"
+          PAYLOAD="$(jq -n             --arg tag "$TAG"             --arg target "$GITHUB_SHA"             --arg name "Roadbreak 75 — v0.17 QA previews"             --arg body "Ephemeral-style QA previews persisted as GitHub Release assets, not Actions artifacts. Source ref: $SOURCE_REF."             '{tag_name:$tag,target_commitish:$target,name:$name,body:$body,draft:false,prerelease:true}')"
 
           RELEASE="$(curl -fsS -X POST "${AUTH[@]}" -H "Content-Type: application/json" -d "$PAYLOAD" "$API/releases")"
           NEW_ID="$(printf '%s' "$RELEASE" | jq -r '.id')"
           test "$NEW_ID" != "null"
 
-          for file in             ci/previews/00_garage_main.png             ci/previews/00_garage_workshop.png             ci/previews/00_garage_driver.png             ci/previews/01_chase.png             ci/previews/02_vehicle.png             ci/previews/04_rival_bus.png             ci/previews/06_mobile_controls.png; do
+          for file in             ci/previews/00_garage_main.png             ci/previews/00_garage_workshop.png             ci/previews/00_garage_driver.png             ci/previews/00_roster_rattler_73.png             ci/previews/00_roster_iron_bus_24.png             ci/previews/00_roster_selena_cross.png             ci/previews/00_roster_bruno_kane.png             ci/previews/00_roster_dorian_vale.png             ci/previews/00_roster_nyra_holt.png             ci/previews/01_chase.png             ci/previews/02_vehicle.png             ci/previews/04_rival_bus.png             ci/previews/06_mobile_controls.png; do
             test -s "$file"
             name="$(basename "$file")"
             curl -fsS -X POST               -H "Authorization: Bearer $GH_TOKEN"               -H "Accept: application/vnd.github+json"               -H "Content-Type: image/png"               --data-binary "@$file"               "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$NEW_ID/assets?name=$name"
@@ -272,7 +294,10 @@ jobs:
           timeout 75s godot --headless --path . -s godot/tests/content_v013_smoke.gd \
             2>&1 | tee /tmp/content-v013.log
           grep -q "CONTENT_V013_RESULT=PASS" /tmp/content-v013.log
-          timeout 100s godot --headless --path . -s godot/tests/touch_regression.gd \
+          timeout 180s godot --headless --path . -s godot/tests/production_v017_smoke.gd \
+            2>&1 | tee /tmp/production-v017.log
+          grep -q "PRODUCTION_V017_RESULT=PASS" /tmp/production-v017.log
+          timeout 120s godot --headless --path . -s godot/tests/touch_regression.gd \
             2>&1 | tee /tmp/touch-regression.log
           grep -q "TOUCH_REGRESSION=PASS" /tmp/touch-regression.log
 
@@ -297,8 +322,8 @@ jobs:
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml | tee build/android/manifest.txt
 
           grep -q "package: name='com.cybertran.roadbreak75'" build/android/badging.txt
-          grep -q "versionCode='14'" build/android/badging.txt
-          grep -q "versionName='0.13.0-rc1'" build/android/badging.txt
+          grep -q "versionCode='18'" build/android/badging.txt
+          grep -q "versionName='0.17.0-rc1'" build/android/badging.txt
           grep -q "native-code: 'arm64-v8a'" build/android/badging.txt
           grep -Eq "screenOrientation.*(0x6|0xb)" build/android/manifest.txt
 
@@ -320,7 +345,7 @@ jobs:
           API="https://api.github.com/repos/$GITHUB_REPOSITORY"
           AUTH=(-H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
           TAG="roadbreak-android-rc-latest"
-          RELEASE_NAME="Roadbreak 75 — Stage1 v0.13.0-rc1"
+          RELEASE_NAME="Roadbreak 75 — Stage1 v0.17.0-rc1"
 
           EXISTING="$(curl -sS "${AUTH[@]}" "$API/releases/tags/$TAG")"
           RELEASE_ID="$(printf '%s' "$EXISTING" | jq -r '.id // empty')"
@@ -331,7 +356,7 @@ jobs:
 
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           SOURCE_SHA="$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)"
-          BODY="Public-runner Android build from private source ref $SOURCE_REF at $SOURCE_SHA. v0.13.0-rc1 is the Content & Handling Pass: actual hero-vehicle replacements, distinct animated garage drivers, authored Gatling, recorded engine/minigun/cannon/missile/mortar/collision/skid audio, tighter handling and a lower chase camera. Credits: Rattler Toy Car by Guido Odendahl / Eric Chadwick (CC0); Iron Bus 3D Bus by ajanhallinta (CC0); Cole SWAT and Mara Animated Women bases by Quaternius (CC0); Gatling/Mini Gun by Tech Knight (CC0). Audio provenance is documented in Docs/V013_ASSET_LEDGER.md. Source code remains in the private Roadbreak repository."
+          BODY="Public-runner Android build from private source ref $SOURCE_REF at $SOURCE_SHA. v0.17.0-rc1 cumulatively integrates Combat Feel, Visual Identity & Garage, Six Fighters & Challenge, and Production Polish. It includes six playable combatants, tactical AI archetypes, Roadbreak vehicle identity kits, touch garage inspection, configurable difficulty/aim assist/camera shake/graphics/audio, 30/60 FPS targets with 60 Hz physics, adaptive industrial music fallback, final bus mix, scene transitions and dedicated v0.17 production smoke coverage. Existing CC0 production asset provenance remains documented in Docs/V013_ASSET_LEDGER.md; restricted third-party source libraries are not mirrored into Stage1. Source code remains in the private Roadbreak repository."
 
           PAYLOAD="$(jq -n \
             --arg tag "$TAG" \
