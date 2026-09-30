@@ -96,6 +96,13 @@ jobs:
           test "$(stat -c%s godot/assets/vehicles/cc0/rattler_toycar.glb)" -gt 5000000
           test "$(stat -c%s godot/assets/drivers/cc0/driver_swat.glb)" -gt 1000000
 
+      - name: Prepare runtime-safe music assets
+        run: |
+          python3 tools/generate_music_assets.py
+          test -s godot/assets/audio/music/garage.wav
+          test -s godot/assets/audio/music/combat.wav
+          test -s godot/assets/audio/music/result.wav
+
       - name: Validate v0.13 production assets
         run: |
           test -s godot/assets/vehicles/cc0/rattler_toycar.glb
@@ -291,7 +298,7 @@ jobs:
       - name: Hydrate large pinned CC0 assets
         run: |
           apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl ca-certificates
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl ca-certificates python3
           mkdir -p godot/assets/vehicles/cc0 godot/assets/drivers/cc0
           curl -fL --retry 4 --retry-delay 2 \
             "https://raw.githubusercontent.com/KhronosGroupArchives/glTF-Sample-Models/d7a3cc8e51d7c573771ae77a57f16b0662a905c6/2.0/ToyCar/glTF-Binary/ToyCar.glb" \
@@ -302,6 +309,13 @@ jobs:
           test "$(stat -c%s godot/assets/vehicles/cc0/rattler_toycar.glb)" -gt 5000000
           test "$(stat -c%s godot/assets/drivers/cc0/driver_swat.glb)" -gt 1000000
           rm -rf /var/lib/apt/lists/*
+
+      - name: Prepare runtime-safe music assets
+        run: |
+          python3 tools/generate_music_assets.py
+          test -s godot/assets/audio/music/garage.wav
+          test -s godot/assets/audio/music/combat.wav
+          test -s godot/assets/audio/music/result.wav
 
       - name: Validate v0.13 production assets
         run: |
