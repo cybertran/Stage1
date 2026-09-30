@@ -1,3 +1,3 @@
-Roadbreak audit remediation v0.18 checkpoint 10
+Roadbreak audit remediation v0.18 checkpoint 11
 source_ref=feat/audit-remediation-v018
-purpose=validate_responsive_manual_touch_regression_at_c611a1bf_and_full_pipeline
+purpose=validate_shoulder_hysteresis_smoke_fix_at_6dd35528_and_publish_android_if_green
