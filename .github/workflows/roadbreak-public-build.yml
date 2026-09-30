@@ -259,7 +259,7 @@ jobs:
           fi
           curl -sS -o /dev/null -X DELETE "${AUTH[@]}" "$API/git/refs/tags/$TAG" || true
 
-          PAYLOAD="$(jq -n             --arg tag "$TAG"             --arg target "$GITHUB_SHA"             --arg name "Roadbreak 75 — v0.17 QA previews"             --arg body "Ephemeral-style QA previews persisted as GitHub Release assets, not Actions artifacts. Source ref: $SOURCE_REF. Pinned source SHA: $SOURCE_SHA."             '{tag_name:$tag,target_commitish:$target,name:$name,body:$body,draft:false,prerelease:true}')"
+          PAYLOAD="$(jq -n             --arg tag "$TAG"             --arg target "$GITHUB_SHA"             --arg name "Roadbreak 75 — v0.18 QA previews"             --arg body "Ephemeral-style QA previews persisted as GitHub Release assets, not Actions artifacts. Source ref: $SOURCE_REF. Pinned source SHA: $SOURCE_SHA."             '{tag_name:$tag,target_commitish:$target,name:$name,body:$body,draft:false,prerelease:true}')"
 
           RELEASE="$(curl -fsS -X POST "${AUTH[@]}" -H "Content-Type: application/json" -d "$PAYLOAD" "$API/releases")"
           NEW_ID="$(printf '%s' "$RELEASE" | jq -r '.id')"
