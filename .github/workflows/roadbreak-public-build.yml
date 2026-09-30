@@ -123,11 +123,40 @@ jobs:
           test -s ci/previews/02_vehicle.png
           test -s ci/previews/06_mobile_controls.png
 
+      - name: Publish QA preview images to Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          API="https://api.github.com/repos/$GITHUB_REPOSITORY"
+          AUTH=(-H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
+          TAG="roadbreak-qa-latest"
+
+          EXISTING="$(curl -sS "${AUTH[@]}" "$API/releases/tags/$TAG")"
+          RELEASE_ID="$(printf '%s' "$EXISTING" | jq -r '.id // empty' 2>/dev/null || true)"
+          if [ -n "$RELEASE_ID" ]; then
+            curl -fsS -X DELETE "${AUTH[@]}" "$API/releases/$RELEASE_ID"
+          fi
+          curl -sS -o /dev/null -X DELETE "${AUTH[@]}" "$API/git/refs/tags/$TAG" || true
+
+          PAYLOAD="$(jq -n             --arg tag "$TAG"             --arg target "$GITHUB_SHA"             --arg name "Roadbreak 75 — v0.13 QA previews"             --arg body "Ephemeral-style QA previews persisted as GitHub Release assets, not Actions artifacts. Source ref: $SOURCE_REF."             '{tag_name:$tag,target_commitish:$target,name:$name,body:$body,draft:false,prerelease:true}')"
+
+          RELEASE="$(curl -fsS -X POST "${AUTH[@]}" -H "Content-Type: application/json" -d "$PAYLOAD" "$API/releases")"
+          NEW_ID="$(printf '%s' "$RELEASE" | jq -r '.id')"
+          test "$NEW_ID" != "null"
+
+          for file in             ci/previews/00_garage_main.png             ci/previews/00_garage_workshop.png             ci/previews/01_chase.png             ci/previews/02_vehicle.png             ci/previews/04_rival_bus.png             ci/previews/06_mobile_controls.png; do
+            test -s "$file"
+            name="$(basename "$file")"
+            curl -fsS -X POST               -H "Authorization: Bearer $GH_TOKEN"               -H "Accept: application/vnd.github+json"               -H "Content-Type: image/png"               --data-binary "@$file"               "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$NEW_ID/assets?name=$name"
+          done
+
       - name: Keep QA ephemeral
         if: always()
         run: |
           echo "Stage1 validated source ${SOURCE_REPOSITORY}@${SOURCE_SHA:-unknown}."
-          echo "Screenshots/logs remain inside this run and are intentionally not uploaded as Actions artifacts."
+          echo "QA screenshots are persisted only as Release assets; no Actions artifacts are created."
 
   build-android:
     name: Build and publish Android APK
@@ -230,7 +259,8 @@ jobs:
           fi
           curl -sS -o /dev/null -X DELETE "${AUTH[@]}" "$API/git/refs/tags/$TAG" || true
 
-          SOURCE_SHA="$(git rev-parse HEAD)"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          SOURCE_SHA="$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)"
           BODY="Public-runner Android build from private source ref $SOURCE_REF at $SOURCE_SHA. v0.13.0-rc1 is the Content & Handling Pass: actual production vehicle replacements, realistic garage drivers, recorded engine/minigun/cannon/missile/collision/skid audio, tighter handling and a more open chase camera. Credits: Cole base Character of business man by Aksgamer (CC BY 4.0); Mara base Realistic Female Character by Realistic 3d (CC BY 4.0); Iron Bus coach base 3D Bus by ajanhallinta (CC0); Rattler base Toy Car from Khronos glTF sample assets (CC0). Audio sources are documented in Docs/V013_ASSET_LEDGER.md. Source code remains in the private Roadbreak repository."
 
           PAYLOAD="$(jq -n \
