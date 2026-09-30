@@ -1,3 +1,3 @@
 Roadbreak audit remediation v0.18 checkpoint 10
 source_ref=feat/audit-remediation-v018
-purpose=validate_responsive_manual_touch_anchor_and_full_pipeline
+purpose=validate_responsive_manual_touch_regression_at_c611a1bf_and_full_pipeline
