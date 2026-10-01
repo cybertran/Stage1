@@ -1,3 +1,3 @@
-Roadbreak Terrain3D overhaul v0.19 dev1 checkpoint 3
+Roadbreak Terrain3D overhaul v0.19 dev1 checkpoint 4
 source_ref=feat/terrain3d-overhaul-v019
-purpose=validate_native_basisu_4k_terrain_textures_and_publish_android_if_green
+purpose=rerun_after_typed_native_texture_resources
