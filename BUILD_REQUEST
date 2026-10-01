@@ -1,4 +1,4 @@
-Roadbreak Terrain3D overhaul v0.19 dev1 checkpoint 8
+Roadbreak Terrain3D overhaul v0.19 dev1 checkpoint 9
 source_ref=feat/terrain3d-overhaul-v019
-source_sha=d67d3bcfa6d574ba998676a3fcf31785d45e502a
-purpose=godot_imported_4k_terrain3d_textures
+source_sha=a277ce2172cce2732e2901fe65b4c187aad92cc6
+purpose=keep_runtime_pbr_texture_assets_resident
