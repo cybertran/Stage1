@@ -1,4 +1,4 @@
-Roadbreak Terrain3D overhaul v0.19 dev1 checkpoint 5
+Roadbreak Terrain3D overhaul v0.19 dev1 checkpoint 6
 source_ref=feat/terrain3d-overhaul-v019
-source_sha=21882d4d5e56333bacbb54582e75ebfc20b3179a
-purpose=lossless_4k_pbr_fast_build
+source_sha=e0e58aae22525c20dfe6d361c370eb197b43b1d0
+purpose=lossless_4k_pbr_with_autoshader_and_compacted_routes
