@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev5 checkpoint 41
+Roadbreak visual physics recovery v0.20 dev5 checkpoint 42
 source_ref=feat/visual-physics-recovery-v020
-source_sha=cacf76a8c8aa23c6fcc0442febcf065c325e887f
-purpose=rerun_after_updating_legacy_v013_Iron_Bus_production_model_gate
+source_sha=613b2071ec04d031823a085e9adf709574962391
+purpose=rerun_after_resolving_garage_hardpoints_from_visual_mount_frame
