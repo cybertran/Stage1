@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev5 checkpoint 39
+Roadbreak visual physics recovery v0.20 dev5 checkpoint 40
 source_ref=feat/visual-physics-recovery-v020
-source_sha=fe95eb387441e5b348dda8c6a8f93f8c05965638
-purpose=prison_transport_iron_bus_anisotropic_armor_fit_and_safe_roster_camera_reaudit
+source_sha=63456bdae79495bacdcaacab1d22264f501fb303
+purpose=validate_visual_floor_center_mount_frame_for_Iron_Bus_and_Mule
