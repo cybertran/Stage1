@@ -469,7 +469,12 @@ jobs:
           if [ "$MANIFEST_PARSED" -eq 1 ]; then
             grep -Eq "screenOrientation.*(0x6|0xb|landscape|sensorLandscape)" build/android/manifest.txt
           else
-            grep -Eq '^window/handheld/orientation=4
+            grep -Eq "window/handheld/orientation=4" project.godot
+            echo "APK_MANIFEST_XMLTREE=SKIPPED_LEGACY_AAPT_SDK36"
+          fi
+
+          sha256sum "$APK" | tee build/android/$APK_NAME.sha256
+          echo "APK_VERIFY=PASS"
 
       - name: Install release publishing tools
         run: |
