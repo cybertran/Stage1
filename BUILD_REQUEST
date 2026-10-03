@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev5 checkpoint 43
+Roadbreak visual physics recovery v0.20 dev5 checkpoint 44
 source_ref=feat/visual-physics-recovery-v020
-source_sha=613b2071ec04d031823a085e9adf709574962391
-purpose=rerun_after_aligning_Stage1_recovery_greps_with_visual_mount_frame_assertions
+source_sha=7c239b011f2f67efac50d6883af6d2a4ba37a26b
+purpose=validate_Mule_static_donor_complete_assembly_bounds_and_safe_garage_camera
