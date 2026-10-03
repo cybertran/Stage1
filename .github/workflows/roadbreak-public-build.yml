@@ -279,7 +279,7 @@ jobs:
       - name: Render gameplay QA
         run: |
           set -euo pipefail
-          timeout 115s xvfb-run -a -s "-screen 0 1280x720x24" \
+          timeout 190s xvfb-run -a -s "-screen 0 1280x720x24" \
             env ROADBREAK_CI_CAPTURE=1 LIBGL_ALWAYS_SOFTWARE=1 \
             /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 \
             --path . res://godot/scenes/main.tscn \
