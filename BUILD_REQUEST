@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev2 checkpoint 32
+Roadbreak visual physics recovery v0.20 dev2 checkpoint 33
 source_ref=feat/visual-physics-recovery-v020
-source_sha=370d5b876373069b55cdfb5a09e8f00d0b95dd92
-purpose=prove_dequantized_v020_donors_load_without_fallback_and_recheck_visual_QA
+source_sha=99d6e1d4098f04de4b2df35079ae64a47343ad50
+purpose=verify_bus_fitted_armor_mule_recovery_donor_visible_fire_node20_android_and_visual_thumbnails
