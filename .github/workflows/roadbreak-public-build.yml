@@ -146,7 +146,7 @@ jobs:
           python3 tools/bootstrap_v020_visual_assets.py
           test -s godot/assets/external_v020/manifest.generated.json
           test -s godot/assets/vehicles/external_v020/wraith_sports_car.glb
-          test -s godot/assets/vehicles/external_v020/mule_technical_pickup.glb
+          test -s godot/assets/vehicles/external_v020/mule_battered_pickup.glb
           test -s godot/assets/vehicles/external_v020/specter_saloon.glb
           test -s godot/assets/vehicles/external_v020/warden_small_van.glb
           test -s godot/assets/environment/external_v020/hangar_arch.glb
@@ -255,7 +255,10 @@ jobs:
           grep -q "RECOVERY_V020_AUTHORED_WRECK_A320_WEST=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_ARMOR_GROUNDED=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_ARMOR_YAW_ALIGNED=PASS" ci/logs/stage1-recovery-v020.log
-          grep -q "RECOVERY_V020_GARAGE_MULE_TECHNICAL_DONOR=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_IRON_BUS_ARMOR_FRONT_AXIS_OFFSET=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_GARAGE_MULE_BATTERED_DONOR=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_GARAGE_MULE_REALISTIC_LENGTH=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_GARAGE_MULE_REALISTIC_HEIGHT=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_FIRE_BRIGHT_CORE=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_SAFE_FRAMING=PASS" ci/logs/stage1-recovery-v020.log
 
@@ -483,7 +486,7 @@ jobs:
           python3 tools/bootstrap_v020_visual_assets.py
           test -s godot/assets/external_v020/manifest.generated.json
           test -s godot/assets/vehicles/external_v020/wraith_sports_car.glb
-          test -s godot/assets/vehicles/external_v020/mule_technical_pickup.glb
+          test -s godot/assets/vehicles/external_v020/mule_battered_pickup.glb
           test -s godot/assets/vehicles/external_v020/specter_saloon.glb
           test -s godot/assets/vehicles/external_v020/warden_small_van.glb
           test -s godot/assets/environment/external_v020/hangar_arch.glb
@@ -548,7 +551,10 @@ jobs:
           grep -q "RECOVERY_V020_AMVLAB_A320_ASSET=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_ARMOR_GROUNDED=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_ARMOR_YAW_ALIGNED=PASS" /tmp/recovery-v020.log
-          grep -q "RECOVERY_V020_GARAGE_MULE_TECHNICAL_DONOR=PASS" /tmp/recovery-v020.log
+          grep -q "RECOVERY_V020_IRON_BUS_ARMOR_FRONT_AXIS_OFFSET=PASS" /tmp/recovery-v020.log
+          grep -q "RECOVERY_V020_GARAGE_MULE_BATTERED_DONOR=PASS" /tmp/recovery-v020.log
+          grep -q "RECOVERY_V020_GARAGE_MULE_REALISTIC_LENGTH=PASS" /tmp/recovery-v020.log
+          grep -q "RECOVERY_V020_GARAGE_MULE_REALISTIC_HEIGHT=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_FIRE_BRIGHT_CORE=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_SAFE_FRAMING=PASS" /tmp/recovery-v020.log
 
@@ -581,8 +587,8 @@ jobs:
           cat build/android/badging.txt
 
           grep -q "package: name='com.cybertran.roadbreak75'" build/android/badging.txt
-          grep -q "versionCode='25'" build/android/badging.txt
-          grep -q "versionName='0.20.0-dev3'" build/android/badging.txt
+          grep -q "versionCode='26'" build/android/badging.txt
+          grep -q "versionName='0.20.0-dev4'" build/android/badging.txt
 
           unzip -l "$APK" > build/android/apk-listing.txt
           grep -q "lib/arm64-v8a/" build/android/apk-listing.txt
@@ -607,7 +613,7 @@ jobs:
           API="https://api.github.com/repos/$GITHUB_REPOSITORY"
           AUTH=(-H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
           TAG="roadbreak-v020-recovery-latest"
-          RELEASE_NAME="Roadbreak 75 — v0.20.0-dev3 Recovery"
+          RELEASE_NAME="Roadbreak 75 — v0.20.0-dev4 Recovery"
 
           EXISTING="$(curl -sS "${AUTH[@]}" "$API/releases/tags/$TAG")"
           RELEASE_ID="$(printf '%s' "$EXISTING" | jq -r '.id // empty')"
@@ -618,7 +624,7 @@ jobs:
 
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           SOURCE_SHA="$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)"
-          BODY="Public-runner Android build from private source ref $SOURCE_REF pinned to immutable SHA $SOURCE_SHA. v0.20.0-dev3 is the visually re-audited recovery build. It keeps the dev1 physics/input fixes and the dev2 terrain/aircraft overhaul, replaces the broken Mule donor with a detailed CC0 technical pickup, grounds the Iron Bus production armor and weapon hardpoints to the fitted coach, replaces oversized fire sprites with layered turbulent flame/core/smoke particles, and preserves the stronger central terrain relief, irregular feathered Terrain3D material transitions, detailed secondary vehicle donors, restrained role-specific combat dressing, tighter Rattler gatling integration, authored A320/B737 graveyard donors, improved hangars and safer garage framing, while retaining the 256m Terrain3D collision window bound to the chase camera plus deterministic safety collision. The dedicated v0.20 recovery gate runs before publication."
+          BODY="Public-runner Android build from private source ref $SOURCE_REF pinned to immutable SHA $SOURCE_SHA. v0.20.0-dev4 is the structural Bus/Mule recovery build. It keeps the dev1 physics/input fixes and the dev2 terrain/aircraft overhaul, moves Mule 66 to a grounded +Z-forward battered survival pickup donor, applies an explicit front-axis correction to the Iron Bus production armor while keeping its weapon aligned to the coach, preserves the layered fire/smoke pass, and retains the stronger central terrain relief, irregular feathered Terrain3D material transitions, detailed secondary vehicle donors, restrained role-specific combat dressing, tighter Rattler gatling integration, authored A320/B737 graveyard donors, improved hangars and safer garage framing, while retaining the 256m Terrain3D collision window bound to the chase camera plus deterministic safety collision. The dedicated v0.20 recovery gate runs before publication."
 
           PAYLOAD="$(jq -n \
             --arg tag "$TAG" \
