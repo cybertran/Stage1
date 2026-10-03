@@ -354,6 +354,7 @@ jobs:
           rm -rf /var/lib/apt/lists/*
 
       - name: Hydrate Terrain3D and CC0 PBR terrain
+        shell: bash
         env:
           ROADBREAK_TERRAIN_RES: "4k"
         run: |
