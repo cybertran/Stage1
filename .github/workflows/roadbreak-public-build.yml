@@ -218,6 +218,7 @@ jobs:
             2>&1 | tee ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_RESULT=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_TERRAIN_SAFETY_BODY=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_TERRAIN3D_PLAYER_TARGET=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_CRANE_BOOM_SOLID=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_RATTLER_GATLING_FORWARD_AXIS=PASS" ci/logs/stage1-recovery-v020.log
 
@@ -528,7 +529,7 @@ jobs:
 
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           SOURCE_SHA="$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)"
-          BODY="Public-runner Android build from private source ref $SOURCE_REF pinned to immutable SHA $SOURCE_SHA. v0.20.0-dev1 is the visual/physics recovery build driven by real-device video QA: stronger combat-basin macro terrain and slope-aware materials, a 384m Terrain3D collision window plus deterministic safety collision, terrain-aware chase camera clamping, solid drive-line props, improved aircraft wreck silhouettes/collision, layered fire, a true floating progressive joystick, direct garage swipe rotation and adaptive framing, retired legacy identity kits, corrected Rattler gatling axis, upgraded projectile/weapon presentation, and separate engine RPM/load/gear modeling. The dedicated v0.20 recovery gate runs before publication."
+          BODY="Public-runner Android build from private source ref $SOURCE_REF pinned to immutable SHA $SOURCE_SHA. v0.20.0-dev1 is the visual/physics recovery build driven by real-device video QA: stronger combat-basin macro terrain and slope-aware materials, the Terrain3D 1.0.2 maximum 256m dynamic collision window centered on the player plus deterministic safety collision, terrain-aware chase camera clamping, solid drive-line props, improved aircraft wreck silhouettes/collision, layered fire, a true floating progressive joystick, direct garage swipe rotation and adaptive framing, retired legacy identity kits, corrected Rattler gatling axis, upgraded projectile/weapon presentation, and separate engine RPM/load/gear modeling. The dedicated v0.20 recovery gate runs before publication."
 
           PAYLOAD="$(jq -n \
             --arg tag "$TAG" \
