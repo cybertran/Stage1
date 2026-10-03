@@ -449,14 +449,26 @@ jobs:
           test -x "$APKSIGNER"
 
           "$APKSIGNER" verify --verbose "$APK" | tee build/android/apksigner.txt
-          "$AAPT" dump badging "$APK" | tee build/android/badging.txt
+
+          # Legacy aapt 33 returns non-zero on SDK 36 typed manifest attributes,
+          # even while emitting usable package/version metadata. Capture its output
+          # without treating that parser incompatibility as an APK failure.
+          set +e
+          "$AAPT" dump badging "$APK" > build/android/badging.txt 2> build/android/aapt-badging.err
+          AAPT_STATUS=$?
+          set -e
+          cat build/android/aapt-badging.err || true
+          cat build/android/badging.txt
 
           grep -q "package: name='com.cybertran.roadbreak75'" build/android/badging.txt
           grep -q "versionCode='21'" build/android/badging.txt
           grep -q "versionName='0.19.0-dev1'" build/android/badging.txt
-          grep -q "native-code: 'arm64-v8a'" build/android/badging.txt
+
+          unzip -l "$APK" > build/android/apk-listing.txt
+          grep -q "lib/arm64-v8a/" build/android/apk-listing.txt
           grep -q "window/handheld/orientation=4" project.godot
 
+          echo "AAPT_BADGING_STATUS=$AAPT_STATUS"
           sha256sum "$APK" | tee build/android/$APK_NAME.sha256
           echo "APK_VERIFY=PASS"
 
