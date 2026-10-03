@@ -255,7 +255,13 @@ jobs:
           grep -q "CI_SMOKE_RESULT=PASS" ci/logs/stage1-gameplay.log
           test -s ci/previews/01_chase.png
           test -s ci/previews/02_vehicle.png
+          test -s ci/previews/03_graveyard_overview.png
           test -s ci/previews/06_mobile_controls.png
+          test -s ci/previews/08_aircraft_corridor.png
+          test -s ci/previews/09_fire_hangar.png
+          test -s ci/previews/11_ground_detail.png
+          test -s ci/previews/12_perimeter_hills.png
+          test -s ci/previews/14_wreck_detail.png
 
       - name: Mirror QA previews into Stage1 repository
         shell: bash
@@ -278,7 +284,13 @@ jobs:
             ci/previews/01_chase.png \
             ci/previews/02_vehicle.png \
             ci/previews/04_rival_bus.png \
-            ci/previews/06_mobile_controls.png; do
+            ci/previews/06_mobile_controls.png \
+            ci/previews/03_graveyard_overview.png \
+            ci/previews/08_aircraft_corridor.png \
+            ci/previews/09_fire_hangar.png \
+            ci/previews/11_ground_detail.png \
+            ci/previews/12_perimeter_hills.png \
+            ci/previews/14_wreck_detail.png; do
             test -s "$file"
             name="$(basename "$file")"
             path="qa/latest/$name"
@@ -319,7 +331,7 @@ jobs:
           NEW_ID="$(printf '%s' "$RELEASE" | jq -r '.id')"
           test "$NEW_ID" != "null"
 
-          for file in             ci/previews/00_garage_main.png             ci/previews/00_garage_workshop.png             ci/previews/00_garage_driver.png             ci/previews/00_roster_rattler_73.png             ci/previews/00_roster_iron_bus_24.png             ci/previews/00_roster_selena_cross.png             ci/previews/00_roster_bruno_kane.png             ci/previews/00_roster_dorian_vale.png             ci/previews/00_roster_nyra_holt.png             ci/previews/01_chase.png             ci/previews/02_vehicle.png             ci/previews/04_rival_bus.png             ci/previews/06_mobile_controls.png; do
+          for file in             ci/previews/00_garage_main.png             ci/previews/00_garage_workshop.png             ci/previews/00_garage_driver.png             ci/previews/00_roster_rattler_73.png             ci/previews/00_roster_iron_bus_24.png             ci/previews/00_roster_selena_cross.png             ci/previews/00_roster_bruno_kane.png             ci/previews/00_roster_dorian_vale.png             ci/previews/00_roster_nyra_holt.png             ci/previews/01_chase.png             ci/previews/02_vehicle.png             ci/previews/04_rival_bus.png             ci/previews/06_mobile_controls.png             ci/previews/03_graveyard_overview.png             ci/previews/08_aircraft_corridor.png             ci/previews/09_fire_hangar.png             ci/previews/11_ground_detail.png             ci/previews/12_perimeter_hills.png             ci/previews/14_wreck_detail.png; do
             test -s "$file"
             name="$(basename "$file")"
             curl -fsS -X POST               -H "Authorization: Bearer $GH_TOKEN"               -H "Accept: application/vnd.github+json"               -H "Content-Type: image/png"               --data-binary "@$file"               "https://uploads.github.com/repos/$GITHUB_REPOSITORY/releases/$NEW_ID/assets?name=$name"
