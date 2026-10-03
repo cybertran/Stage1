@@ -219,7 +219,7 @@ jobs:
           grep -q "RECOVERY_V020_RESULT=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_TERRAIN_SAFETY_BODY=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_TERRAIN3D_CAMERA_BOUND=PASS" ci/logs/stage1-recovery-v020.log
-          grep -q "RECOVERY_V020_CRANE_BOOM_SOLID=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_ROUTE_SCRAP_COLLISIONS=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_RATTLER_GATLING_FORWARD_AXIS=PASS" ci/logs/stage1-recovery-v020.log
 
       - name: Render dedicated garage QA
