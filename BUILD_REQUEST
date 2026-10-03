@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev3 checkpoint 35
+Roadbreak visual physics recovery v0.20 dev3 checkpoint 36
 source_ref=feat/visual-physics-recovery-v020
-source_sha=9067ef4129b7087c9fff8df04ad158d817c1570d
-purpose=visually_reaudit_grounded_bus_technical_mule_layered_fire_and_full_android_release
+source_sha=0e27fa75c4cd85e057952a97a1404c6a082f586b
+purpose=rerun_after_replacing_fire_core_particle_emitters_with_emissive_mesh_to_restore_GPU_budget
