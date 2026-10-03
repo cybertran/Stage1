@@ -75,7 +75,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            xvfb libgl1-mesa-dri libglx-mesa0 mesa-utils wget unzip curl ca-certificates python3 python3-pil nodejs npm
+            xvfb libgl1-mesa-dri libglx-mesa0 mesa-utils wget unzip curl ca-certificates python3 python3-pil nodejs npm xz-utils
 
       - name: Download Godot 4.6.3
         run: |
@@ -128,12 +128,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          NODE_VERSION="20.19.5"
+          NODE_ROOT="/tmp/roadbreak-node20"
+          if [ ! -x "$NODE_ROOT/bin/node" ]; then
+            rm -rf "$NODE_ROOT"
+            mkdir -p "$NODE_ROOT"
+            curl -fsSL --retry 4 --retry-delay 2 \
+              "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" \
+              -o /tmp/roadbreak-node20.tar.xz
+            tar -xJf /tmp/roadbreak-node20.tar.xz --strip-components=1 -C "$NODE_ROOT"
+          fi
+          export PATH="$NODE_ROOT/bin:$PATH"
+          node --version
+          node --version | grep -q '^v20\.'
           npm install --global @gltf-transform/cli@4.5.1
           gltf-transform --version
           python3 tools/bootstrap_v020_visual_assets.py
           test -s godot/assets/external_v020/manifest.generated.json
           test -s godot/assets/vehicles/external_v020/wraith_sports_car.glb
-          test -s godot/assets/vehicles/external_v020/mule_luton.glb
+          test -s godot/assets/vehicles/external_v020/mule_recovery.glb
           test -s godot/assets/vehicles/external_v020/specter_saloon.glb
           test -s godot/assets/vehicles/external_v020/warden_small_van.glb
           test -s godot/assets/environment/external_v020/hangar_arch.glb
@@ -326,6 +339,33 @@ jobs:
                 '{message:$msg,content:$content,branch:$branch}' > /tmp/qa-payload.json
             fi
             curl -fsS -X PUT "${AUTH[@]}" -H "Content-Type: application/json" --data-binary @/tmp/qa-payload.json "$API/contents/$path" >/dev/null
+
+            thumb="/tmp/qa-${name%.png}.jpg"
+            python3 - "$file" "$thumb" <<'PY'
+from PIL import Image
+from pathlib import Path
+import sys
+src, dst = map(Path, sys.argv[1:3])
+with Image.open(src) as im:
+    im = im.convert("RGB")
+    max_width = 800
+    if im.width > max_width:
+        im = im.resize((max_width, max(1, round(im.height * max_width / im.width))), Image.Resampling.LANCZOS)
+    im.save(dst, "JPEG", quality=78, optimize=True, progressive=True)
+PY
+            thumb_name="${name%.png}.jpg"
+            thumb_path="qa/thumbs/$thumb_name"
+            thumb_existing="$(curl -sS "${AUTH[@]}" "$API/contents/$thumb_path?ref=main")"
+            thumb_sha="$(printf '%s' "$thumb_existing" | jq -r '.sha // empty' 2>/dev/null || true)"
+            base64 -w 0 "$thumb" > /tmp/qa-thumb-content.b64
+            if [ -n "$thumb_sha" ]; then
+              jq -n --arg msg "qa: refresh $thumb_name" --arg branch "main" --arg sha "$thumb_sha" --rawfile content /tmp/qa-thumb-content.b64 \
+                '{message:$msg,content:$content,branch:$branch,sha:$sha}' > /tmp/qa-thumb-payload.json
+            else
+              jq -n --arg msg "qa: publish $thumb_name" --arg branch "main" --rawfile content /tmp/qa-thumb-content.b64 \
+                '{message:$msg,content:$content,branch:$branch}' > /tmp/qa-thumb-payload.json
+            fi
+            curl -fsS -X PUT "${AUTH[@]}" -H "Content-Type: application/json" --data-binary @/tmp/qa-thumb-payload.json "$API/contents/$thumb_path" >/dev/null
           done
 
       - name: Publish QA preview images to Release
@@ -390,7 +430,7 @@ jobs:
       - name: Hydrate large pinned CC0 assets
         run: |
           apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl ca-certificates python3 python3-pil unzip nodejs npm
+          DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends curl ca-certificates python3 python3-pil unzip nodejs npm xz-utils
           mkdir -p godot/assets/vehicles/cc0 godot/assets/drivers/cc0
           curl -fL --retry 4 --retry-delay 2 \
             "https://raw.githubusercontent.com/KhronosGroupArchives/glTF-Sample-Models/d7a3cc8e51d7c573771ae77a57f16b0662a905c6/2.0/ToyCar/glTF-Binary/ToyCar.glb" \
@@ -432,12 +472,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          NODE_VERSION="20.19.5"
+          NODE_ROOT="/tmp/roadbreak-node20"
+          if [ ! -x "$NODE_ROOT/bin/node" ]; then
+            rm -rf "$NODE_ROOT"
+            mkdir -p "$NODE_ROOT"
+            curl -fsSL --retry 4 --retry-delay 2 \
+              "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" \
+              -o /tmp/roadbreak-node20.tar.xz
+            tar -xJf /tmp/roadbreak-node20.tar.xz --strip-components=1 -C "$NODE_ROOT"
+          fi
+          export PATH="$NODE_ROOT/bin:$PATH"
+          node --version
+          node --version | grep -q '^v20\.'
           npm install --global @gltf-transform/cli@4.5.1
           gltf-transform --version
           python3 tools/bootstrap_v020_visual_assets.py
           test -s godot/assets/external_v020/manifest.generated.json
           test -s godot/assets/vehicles/external_v020/wraith_sports_car.glb
-          test -s godot/assets/vehicles/external_v020/mule_luton.glb
+          test -s godot/assets/vehicles/external_v020/mule_recovery.glb
           test -s godot/assets/vehicles/external_v020/specter_saloon.glb
           test -s godot/assets/vehicles/external_v020/warden_small_van.glb
           test -s godot/assets/environment/external_v020/hangar_arch.glb
