@@ -254,12 +254,15 @@ jobs:
           grep -q "RECOVERY_V020_RATTLER_GATLING_FORWARD_AXIS=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_AMVLAB_A320_ASSET=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_AUTHORED_WRECK_A320_WEST=PASS" ci/logs/stage1-recovery-v020.log
-          grep -q "RECOVERY_V020_IRON_BUS_ARMOR_GROUNDED=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_IRON_BUS_MOUNT_VISUAL_CENTER=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_IRON_BUS_MOUNT_GROUNDED=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_ARMOR_YAW_ALIGNED=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_PRISON_TRANSPORT_DONOR=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_ANISOTROPIC_ARMOR_FIT=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_CAMERA_SNAP_SAFE=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_BATTERED_DONOR=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_GARAGE_MULE_MOUNT_VISUAL_CENTER=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_GARAGE_MULE_DRESSING_LOCAL_ORIGIN=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_REALISTIC_LENGTH=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_REALISTIC_HEIGHT=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_FIRE_BRIGHT_CORE=PASS" ci/logs/stage1-recovery-v020.log
@@ -553,12 +556,15 @@ jobs:
             2>&1 | tee /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_RESULT=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_AMVLAB_A320_ASSET=PASS" /tmp/recovery-v020.log
-          grep -q "RECOVERY_V020_IRON_BUS_ARMOR_GROUNDED=PASS" /tmp/recovery-v020.log
+          grep -q "RECOVERY_V020_IRON_BUS_MOUNT_VISUAL_CENTER=PASS" /tmp/recovery-v020.log
+          grep -q "RECOVERY_V020_IRON_BUS_MOUNT_GROUNDED=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_ARMOR_YAW_ALIGNED=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_PRISON_TRANSPORT_DONOR=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_ANISOTROPIC_ARMOR_FIT=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_CAMERA_SNAP_SAFE=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_BATTERED_DONOR=PASS" /tmp/recovery-v020.log
+          grep -q "RECOVERY_V020_GARAGE_MULE_MOUNT_VISUAL_CENTER=PASS" /tmp/recovery-v020.log
+          grep -q "RECOVERY_V020_GARAGE_MULE_DRESSING_LOCAL_ORIGIN=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_REALISTIC_LENGTH=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_REALISTIC_HEIGHT=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_FIRE_BRIGHT_CORE=PASS" /tmp/recovery-v020.log
