@@ -254,6 +254,7 @@ jobs:
           grep -q "RECOVERY_V020_AMVLAB_A320_ASSET=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_AUTHORED_WRECK_A320_WEST=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_ARMOR_GROUNDED=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_IRON_BUS_ARMOR_YAW_ALIGNED=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_TECHNICAL_DONOR=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_FIRE_BRIGHT_CORE=PASS" ci/logs/stage1-recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_SAFE_FRAMING=PASS" ci/logs/stage1-recovery-v020.log
@@ -546,6 +547,7 @@ jobs:
           grep -q "RECOVERY_V020_RESULT=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_AMVLAB_A320_ASSET=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_IRON_BUS_ARMOR_GROUNDED=PASS" /tmp/recovery-v020.log
+          grep -q "RECOVERY_V020_IRON_BUS_ARMOR_YAW_ALIGNED=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_TECHNICAL_DONOR=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_FIRE_BRIGHT_CORE=PASS" /tmp/recovery-v020.log
           grep -q "RECOVERY_V020_GARAGE_MULE_SAFE_FRAMING=PASS" /tmp/recovery-v020.log
