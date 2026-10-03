@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev5 checkpoint 42
+Roadbreak visual physics recovery v0.20 dev5 checkpoint 43
 source_ref=feat/visual-physics-recovery-v020
 source_sha=613b2071ec04d031823a085e9adf709574962391
-purpose=rerun_after_resolving_garage_hardpoints_from_visual_mount_frame
+purpose=rerun_after_aligning_Stage1_recovery_greps_with_visual_mount_frame_assertions
