@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev1 checkpoint 24
+Roadbreak visual physics recovery v0.20 dev1 checkpoint 25
 source_ref=feat/visual-physics-recovery-v020
-source_sha=b302b227ee9d7e120064ca2a9e35c7db2de2087c
-purpose=rerun_after_explicit_engine_nacelle_vector_typing
+source_sha=98db12bf2dd14e4a09daeb412974e1c54aaa9607
+purpose=rerun_after_native_Terrain3D_collision_target_and_unique_route_scrap_colliders
