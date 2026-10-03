@@ -1,4 +1,4 @@
-Roadbreak Terrain3D overhaul v0.19 dev2 checkpoint 18
+Roadbreak Terrain3D overhaul v0.19 dev2 checkpoint 19
 source_ref=feat/terrain3d-overhaul-v019
-source_sha=811c06466243cdf96acbbf3c48fa7b55660da1b1
-purpose=full_audit_terrain_vehicle_bus_garage_rotation_android_release
+source_sha=80e53dbddf40958f98d21b6c34b4af9b489aa40a
+purpose=rerun_full_audit_after_isolated_rough_terrain_material_zone
