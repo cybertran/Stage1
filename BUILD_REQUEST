@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev1 checkpoint 27
+Roadbreak visual physics recovery v0.20 dev1 checkpoint 28
 source_ref=feat/visual-physics-recovery-v020
-source_sha=8b10d7c4322ace413934eaf36dc681ae8f98d6ea
-purpose=rerun_after_consolidating_solid_props_under_static_body_budget
+source_sha=3ccd0df99668e6cc1e36d25b9971a2b159e6c27d
+purpose=rerun_after_declaring_shared_metal_prop_collision_root
