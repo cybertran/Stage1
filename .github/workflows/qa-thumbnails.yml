@@ -1,0 +1,80 @@
+name: Roadbreak QA Thumbnails
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "qa/latest/*.png"
+      - ".github/workflows/qa-thumbnails.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: roadbreak-qa-thumbnails
+  cancel-in-progress: true
+
+jobs:
+  build-thumbnails:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout Stage1
+        uses: actions/checkout@v4
+
+      - name: Install Pillow
+        run: python3 -m pip install --user pillow
+
+      - name: Generate QA thumbnails
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+
+          source = Path("qa/latest")
+          target = Path("qa/thumbs")
+          target.mkdir(parents=True, exist_ok=True)
+
+          wanted = {
+              "00_roster_rattler_73.png",
+              "00_roster_iron_bus_24.png",
+              "00_roster_selena_cross.png",
+              "00_roster_bruno_kane.png",
+              "00_roster_dorian_vale.png",
+              "00_roster_nyra_holt.png",
+              "03_graveyard_overview.png",
+              "06_mobile_controls.png",
+              "08_aircraft_corridor.png",
+              "09_fire_hangar.png",
+              "11_ground_detail.png",
+              "12_perimeter_hills.png",
+              "14_wreck_detail.png",
+          }
+
+          for src in sorted(source.glob("*.png")):
+              if src.name not in wanted:
+                  continue
+              with Image.open(src) as im:
+                  im = im.convert("RGB")
+                  max_width = 800
+                  if im.width > max_width:
+                      new_height = max(1, round(im.height * max_width / im.width))
+                      im = im.resize((max_width, new_height), Image.Resampling.LANCZOS)
+                  out = target / src.name.replace(".png", ".jpg")
+                  im.save(out, "JPEG", quality=78, optimize=True, progressive=True)
+                  print(f"{src} -> {out} ({out.stat().st_size} bytes)")
+          PY
+
+      - name: Commit updated thumbnails
+        run: |
+          set -euo pipefail
+          git config user.name "roadbreak-qa-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add qa/thumbs
+          if git diff --cached --quiet; then
+            echo "No thumbnail changes."
+            exit 0
+          fi
+          git commit -m "qa: refresh compact visual audit thumbnails"
+          git push
