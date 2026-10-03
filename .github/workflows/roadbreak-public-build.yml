@@ -6,7 +6,7 @@ on:
       source_ref:
         description: "Private Roadbreak branch/tag/commit to build"
         required: true
-        default: "feat/terrain3d-overhaul-v019"
+        default: "feat/visual-physics-recovery-v020"
         type: string
   push:
     branches:
@@ -15,7 +15,7 @@ on:
       - BUILD_REQUEST
 
 concurrency:
-  group: roadbreak-public-builder-v019
+  group: roadbreak-public-builder-v020
   cancel-in-progress: true
 
 permissions:
@@ -25,7 +25,7 @@ env:
   SOURCE_REPOSITORY: cybertran/Roadbreak-75
   GODOT_VERSION: "4.6.3"
   APK_NAME: "Roadbreak-75-debug.apk"
-  SOURCE_REF: ${{ inputs.source_ref || 'feat/terrain3d-overhaul-v019' }}
+  SOURCE_REF: ${{ inputs.source_ref || 'feat/visual-physics-recovery-v020' }}
 
 jobs:
   resolve-source:
@@ -207,6 +207,19 @@ jobs:
           grep -q "TOUCH_REGRESSION=PASS" ci/logs/stage1-touch.log
           grep -q "TOUCH_GARAGE_DEDICATED_3D_STAGE=PASS" ci/logs/stage1-touch.log
           grep -q "TOUCH_GARAGE_WEAPON_HARDPOINTS=PASS" ci/logs/stage1-touch.log
+          grep -q "TOUCH_GARAGE_SWIPE_ROTATES_VEHICLE=PASS" ci/logs/stage1-touch.log
+          grep -q "TOUCH_COMBAT_FLOATING_ORIGIN_NEUTRAL=PASS" ci/logs/stage1-touch.log
+
+      - name: Run v0.20 visual physics recovery gate
+        run: |
+          set -euo pipefail
+          timeout 180s /tmp/godot/Godot_v4.6.3-stable_linux.x86_64 \
+            --verbose --headless --path . -s godot/tests/recovery_v020_smoke.gd \
+            2>&1 | tee ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_RESULT=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_TERRAIN_SAFETY_BODY=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_CRANE_BOOM_SOLID=PASS" ci/logs/stage1-recovery-v020.log
+          grep -q "RECOVERY_V020_RATTLER_GATLING_FORWARD_AXIS=PASS" ci/logs/stage1-recovery-v020.log
 
       - name: Render dedicated garage QA
         run: |
@@ -291,7 +304,7 @@ jobs:
           set -euo pipefail
           API="https://api.github.com/repos/$GITHUB_REPOSITORY"
           AUTH=(-H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
-          TAG="roadbreak-terrain-v019-qa-latest"
+          TAG="roadbreak-v020-recovery-qa-latest"
 
           EXISTING="$(curl -sS "${AUTH[@]}" "$API/releases/tags/$TAG")"
           RELEASE_ID="$(printf '%s' "$EXISTING" | jq -r '.id // empty' 2>/dev/null || true)"
@@ -300,7 +313,7 @@ jobs:
           fi
           curl -sS -o /dev/null -X DELETE "${AUTH[@]}" "$API/git/refs/tags/$TAG" || true
 
-          PAYLOAD="$(jq -n             --arg tag "$TAG"             --arg target "$GITHUB_SHA"             --arg name "Roadbreak 75 — v0.19 Terrain3D QA previews"             --arg body "Ephemeral-style QA previews persisted as GitHub Release assets, not Actions artifacts. Source ref: $SOURCE_REF. Pinned source SHA: $SOURCE_SHA."             '{tag_name:$tag,target_commitish:$target,name:$name,body:$body,draft:false,prerelease:true}')"
+          PAYLOAD="$(jq -n             --arg tag "$TAG"             --arg target "$GITHUB_SHA"             --arg name "Roadbreak 75 — v0.20 Recovery QA previews"             --arg body "Ephemeral-style QA previews persisted as GitHub Release assets, not Actions artifacts. Source ref: $SOURCE_REF. Pinned source SHA: $SOURCE_SHA."             '{tag_name:$tag,target_commitish:$target,name:$name,body:$body,draft:false,prerelease:true}')"
 
           RELEASE="$(curl -fsS -X POST "${AUTH[@]}" -H "Content-Type: application/json" -d "$PAYLOAD" "$API/releases")"
           NEW_ID="$(printf '%s' "$RELEASE" | jq -r '.id')"
@@ -431,6 +444,11 @@ jobs:
           timeout 120s godot --headless --path . -s godot/tests/touch_regression.gd \
             2>&1 | tee /tmp/touch-regression.log
           grep -q "TOUCH_REGRESSION=PASS" /tmp/touch-regression.log
+          grep -q "TOUCH_GARAGE_SWIPE_ROTATES_VEHICLE=PASS" /tmp/touch-regression.log
+          grep -q "TOUCH_COMBAT_FLOATING_ORIGIN_NEUTRAL=PASS" /tmp/touch-regression.log
+          timeout 180s godot --headless --path . -s godot/tests/recovery_v020_smoke.gd \
+            2>&1 | tee /tmp/recovery-v020.log
+          grep -q "RECOVERY_V020_RESULT=PASS" /tmp/recovery-v020.log
 
       - name: Export debug APK
         run: |
@@ -461,8 +479,8 @@ jobs:
           cat build/android/badging.txt
 
           grep -q "package: name='com.cybertran.roadbreak75'" build/android/badging.txt
-          grep -q "versionCode='22'" build/android/badging.txt
-          grep -q "versionName='0.19.0-dev2'" build/android/badging.txt
+          grep -q "versionCode='23'" build/android/badging.txt
+          grep -q "versionName='0.20.0-dev1'" build/android/badging.txt
 
           unzip -l "$APK" > build/android/apk-listing.txt
           grep -q "lib/arm64-v8a/" build/android/apk-listing.txt
@@ -486,8 +504,8 @@ jobs:
           set -euo pipefail
           API="https://api.github.com/repos/$GITHUB_REPOSITORY"
           AUTH=(-H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
-          TAG="roadbreak-terrain-v019-latest"
-          RELEASE_NAME="Roadbreak 75 — Terrain3D v0.19.0-dev2"
+          TAG="roadbreak-v020-recovery-latest"
+          RELEASE_NAME="Roadbreak 75 — v0.20.0-dev1 Recovery"
 
           EXISTING="$(curl -sS "${AUTH[@]}" "$API/releases/tags/$TAG")"
           RELEASE_ID="$(printf '%s' "$EXISTING" | jq -r '.id // empty')"
@@ -498,7 +516,7 @@ jobs:
 
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           SOURCE_SHA="$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)"
-          BODY="Public-runner Android build from private source ref $SOURCE_REF pinned to immutable SHA $SOURCE_SHA. v0.19.0-dev2 completes the first visible Terrain3D art pass: a 1.92 km authored heightfield, 1.25 m terrain sampling, compacted routes, cracked-clay impact basins, rocky elevations, rough wreck-field soil, Terrain3D clipmap LOD/collision, and six CC0 PBR ground sets hydrated from Poly Haven and ambientCG. It also corrects the Rattler visual facing, consolidates the Iron Bus on the ajanhallinta FBX body, and adds explicit garage vehicle rotation controls. Existing v0.18 gameplay/audit regression gates remain active. Source code and provider source-map duplicates are not mirrored into Stage1."
+          BODY="Public-runner Android build from private source ref $SOURCE_REF pinned to immutable SHA $SOURCE_SHA. v0.20.0-dev1 is the visual/physics recovery build driven by real-device video QA: stronger combat-basin macro terrain and slope-aware materials, a 384m Terrain3D collision window plus deterministic safety collision, terrain-aware chase camera clamping, solid drive-line props, improved aircraft wreck silhouettes/collision, layered fire, a true floating progressive joystick, direct garage swipe rotation and adaptive framing, retired legacy identity kits, corrected Rattler gatling axis, upgraded projectile/weapon presentation, and separate engine RPM/load/gear modeling. The dedicated v0.20 recovery gate runs before publication."
 
           PAYLOAD="$(jq -n \
             --arg tag "$TAG" \
