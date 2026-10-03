@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev3 checkpoint 36
+Roadbreak visual physics recovery v0.20 dev3 checkpoint 37
 source_ref=feat/visual-physics-recovery-v020
-source_sha=0e27fa75c4cd85e057952a97a1404c6a082f586b
-purpose=rerun_after_replacing_fire_core_particle_emitters_with_emissive_mesh_to_restore_GPU_budget
+source_sha=f7889630e252eb678e540031ad889c676662b47a
+purpose=visually_reaudit_bus_yaw_alignment_and_Mule_safe_camera_after_particle_budget_fix
