@@ -1,4 +1,4 @@
-Roadbreak Terrain3D overhaul v0.19 dev1 checkpoint 16
+Roadbreak Terrain3D overhaul v0.19 dev1 checkpoint 17
 source_ref=feat/terrain3d-overhaul-v019
 source_sha=4dde3af2380d05991c0aa80ef66dd43928e90d71
-purpose=publish_android_from_restored_valid_workflow
+purpose=publish_android_after_legacy_aapt_sdk36_tolerance
