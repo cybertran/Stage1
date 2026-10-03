@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev1 checkpoint 20
+Roadbreak visual physics recovery v0.20 dev1 checkpoint 21
 source_ref=feat/visual-physics-recovery-v020
-source_sha=4ed5194e46fa328442320ea99c8e4b6bb30bdd82
-purpose=full_v020_recovery_build_after_video_audit_terrain_weapons_physics_input_audio
+source_sha=5f7f2dad16950cc838875bd1a3732a537fa7d9aa
+purpose=final_v020_recovery_build_with_bus_weapon_runtime_asserts_and_visual_evidence
