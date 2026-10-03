@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev3 checkpoint 37
+Roadbreak visual physics recovery v0.20 dev4 checkpoint 38
 source_ref=feat/visual-physics-recovery-v020
-source_sha=f7889630e252eb678e540031ad889c676662b47a
-purpose=visually_reaudit_bus_yaw_alignment_and_Mule_safe_camera_after_particle_budget_fix
+source_sha=02e675c62b341db4b2e013b42375aa01fd446b67
+purpose=structural_bus_front_axis_and_battered_mule_donor_visual_reaudit
