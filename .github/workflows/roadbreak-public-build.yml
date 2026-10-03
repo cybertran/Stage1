@@ -461,8 +461,8 @@ jobs:
           cat build/android/badging.txt
 
           grep -q "package: name='com.cybertran.roadbreak75'" build/android/badging.txt
-          grep -q "versionCode='21'" build/android/badging.txt
-          grep -q "versionName='0.19.0-dev1'" build/android/badging.txt
+          grep -q "versionCode='22'" build/android/badging.txt
+          grep -q "versionName='0.19.0-dev2'" build/android/badging.txt
 
           unzip -l "$APK" > build/android/apk-listing.txt
           grep -q "lib/arm64-v8a/" build/android/apk-listing.txt
@@ -487,7 +487,7 @@ jobs:
           API="https://api.github.com/repos/$GITHUB_REPOSITORY"
           AUTH=(-H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28")
           TAG="roadbreak-terrain-v019-latest"
-          RELEASE_NAME="Roadbreak 75 — Terrain3D v0.19.0-dev1"
+          RELEASE_NAME="Roadbreak 75 — Terrain3D v0.19.0-dev2"
 
           EXISTING="$(curl -sS "${AUTH[@]}" "$API/releases/tags/$TAG")"
           RELEASE_ID="$(printf '%s' "$EXISTING" | jq -r '.id // empty')"
@@ -498,7 +498,7 @@ jobs:
 
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           SOURCE_SHA="$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)"
-          BODY="Public-runner Android build from private source ref $SOURCE_REF pinned to immutable SHA $SOURCE_SHA. v0.19.0-dev1 starts the Terrain3D visual overhaul: a 1.92 km authored heightfield, 1.25 m terrain sampling, Terrain3D clipmap LOD/collision, and six CC0 PBR ground sets hydrated from Poly Haven and ambientCG. Existing v0.18 gameplay/audit regression gates remain active. Source code and provider source-map duplicates are not mirrored into Stage1."
+          BODY="Public-runner Android build from private source ref $SOURCE_REF pinned to immutable SHA $SOURCE_SHA. v0.19.0-dev2 completes the first visible Terrain3D art pass: a 1.92 km authored heightfield, 1.25 m terrain sampling, compacted routes, cracked-clay impact basins, rocky elevations, rough wreck-field soil, Terrain3D clipmap LOD/collision, and six CC0 PBR ground sets hydrated from Poly Haven and ambientCG. It also corrects the Rattler visual facing, consolidates the Iron Bus on the ajanhallinta FBX body, and adds explicit garage vehicle rotation controls. Existing v0.18 gameplay/audit regression gates remain active. Source code and provider source-map duplicates are not mirrored into Stage1."
 
           PAYLOAD="$(jq -n \
             --arg tag "$TAG" \
