@@ -169,6 +169,7 @@ jobs:
             --headless --path . --editor --quit \
             2>&1 | tee ci/logs/stage1-import.log
           ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script" ci/logs/stage1-import.log
+          ! grep -E "KHR_mesh_quantization|Error importing 'res://godot/assets/(vehicles|environment)/external_v020" ci/logs/stage1-import.log
 
       - name: Run v0.18 compile/load gate
         run: |
@@ -475,7 +476,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          godot --headless --path . --editor --quit
+          godot --headless --path . --editor --quit 2>&1 | tee /tmp/stage1-import.log
+          ! grep -E "SCRIPT ERROR:|Parse Error:|Compile Error:|Failed to load script|KHR_mesh_quantization|Error importing 'res://godot/assets/(vehicles|environment)/external_v020" /tmp/stage1-import.log
           timeout 90s godot --headless --path . -s godot/tests/compile_v018_smoke.gd \
             2>&1 | tee /tmp/compile-v018.log
           grep -q "COMPILE_V018_RESULT=PASS" /tmp/compile-v018.log
