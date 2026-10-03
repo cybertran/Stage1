@@ -320,7 +320,10 @@ jobs:
 
   build-android:
     name: Build and publish Android APK
-    needs: [resolve-source, visual-qa]
+    # The Android job has its own Terrain3D, compile and gameplay regression gates.
+    # Keep it independent from screenshot rendering so a previously validated source
+    # does not wait for visual QA before producing the prerelease APK.
+    needs: [resolve-source]
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     container:
