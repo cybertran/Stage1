@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev1 checkpoint 22
+Roadbreak visual physics recovery v0.20 dev1 checkpoint 23
 source_ref=feat/visual-physics-recovery-v020
-source_sha=36b8c397e8fe380171fadfb72f820dede5394fcc
-purpose=rerun_after_Terrain3D_1_0_2_radius_limit_and_player_collision_target_fix
+source_sha=f2db8fc4ca24c1248250c9b18c9ada43670b0bf3
+purpose=rerun_after_fixing_Terrain3D_collision_property_initialization_order
