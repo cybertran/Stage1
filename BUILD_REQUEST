@@ -1,4 +1,4 @@
-Roadbreak visual physics recovery v0.20 dev2 checkpoint 31
+Roadbreak visual physics recovery v0.20 dev2 checkpoint 32
 source_ref=feat/visual-physics-recovery-v020
-source_sha=436bec23bc7625c0669892d1b67cdd7d1f7886fd
-purpose=rerun_after_dequantizing_v020_donors_and_expanding_Mule_garage_framing
+source_sha=370d5b876373069b55cdfb5a09e8f00d0b95dd92
+purpose=prove_dequantized_v020_donors_load_without_fallback_and_recheck_visual_QA
